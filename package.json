@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-custom-config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "根据plugin.xml或者config.xml中定义的自定义配置更新平台配置",
   "cordova": {
     "id": "cordova-plugin-custom-config",
