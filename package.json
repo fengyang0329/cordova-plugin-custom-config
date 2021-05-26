@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/fengyang0329/cordova-plugin-custom-config#readme",
   "dependencies": {
-    "child_process": "^1.0.2",
     "colors": "^1.4.0",
     "elementtree": "^0.1.7",
     "fs": "0.0.1-security",
