@@ -76,9 +76,10 @@ const plists = (function () {
                          </array>
                     </custom-config-file>
                  */
+                var itemDataTag = item.data.tag;
                 if (value.constructor == Array && item.split != null && item.split != undefined && item.split != 'undefined') {
 
-                    var splitValue = [];
+                    var splitValue = [];              
                     _.each(value, function (tmpItem) {
 
                         if (tmpItem.constructor == String) {
@@ -88,14 +89,16 @@ const plists = (function () {
                         }
                     });
                     value = splitValue;
+                    itemDataTag = "array";
                 }
                 if (item.mode === 'delete') {
                     delete infoPlist[key];
-                } else if (item.data.tag === "array" && infoPlist[key] && item.mode !== 'replace') {
+                } else if (infoPlist[key] && infoPlist[key].constructor == Array && itemDataTag === "array" && item.mode !== 'replace') {
 
                     infoPlist[key] = infoPlist[key].concat(value).filter(utils.onlyUnique);
 
                 } else {
+
                     infoPlist[key] = value;
                 }
                 colorsLog.log("Wrote to plist; key=" + key + "; value=" + infoPlist[key]);

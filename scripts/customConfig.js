@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const { fail } = require('assert');
+
 var path, cwd;
 
 var fs,
@@ -27,8 +29,6 @@ function getCustomConfigsFromConfigXml() {
  */
 function updateiOSPlatformConfig() {
 
-    // var platform = 'ios',
-    //     platformPath = path.join(rootdir, 'platforms', platform);
     var projectPath = path.join(iosPlatformPath, projectName);
     var configData = getCustomConfigsFromConfigXml();
     colorsLog.info(`Get All custom config：`, configData);
@@ -98,40 +98,20 @@ function getiOSPreferences(configData) {
             value: attrib.value,
             mode: attrib.mode
         };
-        if (attrib.buildType) {
-            prefModel["buildType"] = attrib.buildType;
-        }
         //quote:给key或者value添加双引号
         if (attrib.quote) {
             prefModel["quote"] = attrib.quote;
         } else {
             prefModel["quote"] = "none";
         }
+        if(attrib.buildType){
+            prefModel["buildType"] = attrib.buildType;
+        }
         if (!configData[target]) {
             configData[target] = [];
         }
         if (attrib.func) {
 
-            // prefModel["func"] = preference.attrib.func;
-            // prefModel["args"] = [];
-            // var targetResourcesPath = path.join(platformPath, projectName, "Resources");
-            // _.each(preference.getchildren(), function (arg) {
-            //     if (arg.tag === "arg") {
-
-            //         var value = String(arg.attrib.value);
-            //         var originPath = path.join(rootdir, value);
-            //         if (fs.existsSync(originPath)) {
-
-            //             var filename = path.basename(originPath);
-            //                     var fileTargetPath = path.join(targetResourcesPath, filename);
-            //                     var readStream = fs.createReadStream(originPath);
-            //                     var writeStream = fs.createWriteStream(fileTargetPath);
-            //                     readStream.pipe(writeStream);
-            //                     prefModel["args"].push(path.join("Resources", filename));
-            //                     configData[target].push(prefModel);
-            //         }
-            //     }
-            // });
             parseiOSXcodeFunc(prefModel, preference, configData, target);
         } else {
 
@@ -169,15 +149,6 @@ function parseiOSXcodeFunc(prefModel, preference, configData, target) {
                         }
                     });
                 } else {
-
-                    // var targetResourcesPath = path.join(iosPlatformPath, projectName, "Resources");
-                    // var filename = path.basename(originPath);
-                    //             var fileTargetPath = path.join(targetResourcesPath, filename);
-                    //             var readStream = fs.createReadStream(originPath);
-                    //             var writeStream = fs.createWriteStream(fileTargetPath);
-                    //             readStream.pipe(writeStream);
-                    //             prefModel["args"].push(path.join("Resources", filename));
-                    //             configData[target].push(prefModel);
                     getXcodeFuncModel(arg, prefModel, originPath, configData, target);
                 }
 
@@ -277,10 +248,6 @@ function getConfigFilesByTargetAndParent() {
     var result = utils.keyBy(configFileData, function (item) {
         var parent = item.attrib.parent;
         var mode, split;
-        if (item.attrib.add) {
-            colorsLog.warn("add=\"true\" is deprecated. Change to mode=\"add\".");
-            mode = "add";
-        }
         if (item.attrib.mode) {
             mode = item.attrib.mode;
         }
@@ -300,10 +267,10 @@ function getConfigFilesByTargetAndParent() {
 function copyPodPlistToTargetPlist() {
 
     var targetInfoPlistPath = path.join(iosPlatformPath, projectName, projectName + '-Info.plist');
-    var podInfoPlistPath = path.join(platformPath, "Pods/Target Support Files/Pods-" + projectName, 'Pods-' + projectName + '-Info.plist');
+    var podInfoPlistPath = path.join(iosPlatformPath, "Pods/Target Support Files/Pods-" + projectName, 'Pods-' + projectName + '-Info.plist');
     if (!utils.exists(podInfoPlistPath)) {
 
-        colorsLog.warn('***********Pod Info plist 文件不存在***********');
+        // colorsLog.warn('***********Pod Info plist 文件不存在***********');
         return;
     }
     var infoPlist = plist.parse(fs.readFileSync(targetInfoPlistPath, 'utf-8'));

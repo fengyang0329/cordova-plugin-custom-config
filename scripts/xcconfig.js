@@ -2,7 +2,7 @@
 
 const xcconfig = (function () {
 
-    var xcconfigs = ["build.xcconfig", "build-extras.xcconfig", "build-debug.xcconfig", "build-release.xcconfig"];
+    var xcconfigs = ["build.xcconfig", "build-debug.xcconfig", "build-release.xcconfig"];
 
     var fs = require('fs');
     var path = require('path');
@@ -66,10 +66,11 @@ const xcconfig = (function () {
                         . : 查找单个字符，除了换行和行结束符
                         * : 匹配任何包含零个或多个 n 的字符串
                         ? : 匹配任何包含零个或一个 n 的字符串
-                        ():获取指定内容
+                        (): 获取指定内容
                         */
                         var nameRegexp = "\n\"?" + escapedName + "\"?";
-                        var existName = fileContents.match(nameRegexp)[0];
+                        var res = fileContents.match(nameRegexp);
+                        var existName = res? res[0] : null;
                         if (existName != null) {
 
                             var valueRegexp = `${existName} ?= ?(.*?)\n`;
@@ -111,15 +112,19 @@ const xcconfig = (function () {
                             modified = true;
                         } else {
 
-                            // If file contains the item, replace it with configured value
+                            /**
+                             *xcconfigEnforce : 默认false
+                                true,如果在.xcconfig文件中查找不到，则强制新增
+                                != true,只有查找到，才会替换
+                                === 和 !== 只有在相同类型下,才会比较其值
+                             */
                             if (fileContents.match(escapedName) && item.xcconfigEnforce !== "false") {
+                                
                                 doReplace();
-                            } else // presence of item is being enforced, so add it to the relevant .xcconfig
-                                if (item.xcconfigEnforce === "true") {
+                            }else if(item.xcconfigEnforce === "true"){
 
-                                    fileContents += "\n" + name + " = " + value;
-                                    modified = true;
-                                }
+                                doReplace();
+                            }
                         }
                     } 
                 }
