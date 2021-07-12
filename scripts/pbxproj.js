@@ -84,7 +84,15 @@ const pbxproj = (function () {
                 var quotedMatch = !!block["buildSettings"][utils.quoteEscape(item.name)];
                 var match = literalMatch || quotedMatch;
                 //buildType : debug or release
-                var sameBuildType = item.buildType.toLowerCase() === block['name'].toLowerCase();
+                var blockName = block['name'].toLowerCase();
+                //判断构建模式是否相同
+                var sameBuildType = false;
+                if(item.buildType){
+                    sameBuildType = item.buildType.toLowerCase() === blockName;
+                }else if(blockName == "debug" || blockName == "release"){
+                    //不指定类型，则debug和relese都添加
+                    sameBuildType = true;
+                }
                 if ((match || mode === "add") && sameBuildType) {
 
                     var name;
