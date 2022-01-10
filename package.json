@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-custom-config",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "根据plugin.xml或者config.xml中定义的自定义配置更新平台配置",
   "cordova": {
     "id": "cordova-plugin-custom-config",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/fengyang0329/cordova-plugin-custom-config#readme",
   "dependencies": {
-    "colors": "^1.4.0",
+    "colors": "1.4.0",
     "elementtree": "^0.1.7",
     "fs": "0.0.1-security",
     "lodash": "^4.17.21",
